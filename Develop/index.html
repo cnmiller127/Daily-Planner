@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+      integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <title>Work Day Scheduler</title>
+  </head>
+
+  <body>
+    <header class="jumbotron">
+      <h1 class="display-3">Work Day Scheduler</h1>
+      <p class="lead">A simple calendar app for scheduling your work day</p>
+      <p id="currentDay" class="lead"></p>
+    </header>
+    <div class="container">
+      <!-- Timeblocks go here -->
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script type="text/javascript">
+
+      $(document).ready(function() {
+      
+      var date = moment().format("dddd[,] MMMM Do YYYY");
+      var currentTime = parseInt(moment().format("HH"));
+      //console.log(currentTime); 
+      //console.log(date);
+      $("#currentDay").text(date);
+      
+      var hour = 9;
+      var amPm;
+      var timeSlot;
+      var textInput;
+      var textArray = [];
+      var noVals = true;
+      
+
+        function createTable(){
+          for(var i = 0; i < 9; i++){
+            //Append 8 rows
+            var row = $("<div>");
+            row.addClass("row time-block no-gutters")
+            row.attr("id", i);
+            $(".container").append(row);
+              //Append 8 hour block cols
+            var col1 = $("<div>");
+            col1.addClass("col-1")
+            row.append(col1);
+            var tBlock = $("<div>");
+            if(i < 4){
+              amPm = "AM"
+              tBlock.attr("value", hour)
+            }
+            else{
+              hour = i - 3;
+              amPm = "PM";
+              tBlock.attr("value", hour + 12)
+            }
+            timeSlot = hour + amPm;
+            tBlock.text(timeSlot);
+            tBlock.addClass("hour");
+            tBlock.attr("id", "tBlock-" + i)
+            col1.append(tBlock);
+            hour++;
+
+            // Append 8 Text areas
+            var col2 = $("<div>");
+            col2.addClass("col-10");
+            row.append(col2);
+            var formEl = $("<form>");
+            formEl.attr("id", "formEl" + i)
+            col2.append(formEl);
+            var textArea = $("<textarea>");
+            textArea.addClass("textarea description")
+            textArea.attr("id", "txt-" + i)
+            formEl.append(textArea);
+
+            //Append 8 save btns
+            var col3 = $("<div>");
+            col3.addClass("col-1");
+            row.append(col3);
+            var btn = $("<button>");
+            btn.addClass("saveBtn")
+            btn.text("💾" )
+            col3.append(btn);
+
+          
+
+          }
+        }
+
+        function checkTime(){
+          for(var i = 0; i < 9; i++){
+            var tVal = $("#tBlock-" + i).attr("value");
+            tVal = parseInt(tVal);
+            var txtBox = $("#txt-" + i);
+             if(tVal === currentTime){
+               txtBox.addClass("present")
+             }
+             else if (tVal < currentTime){
+              txtBox.addClass("past")
+             }
+             else{
+              txtBox.addClass("future")
+             }
+ 
+          }
+        }
+        
+        function getStorage(){
+            for(var j= 0; j < 9; j++){
+              getStor = JSON.parse(localStorage.getItem(("stor[" + j + "]")));
+              $("#txt-" + j).text(getStor);
+            }  
+          }
+        
+        createTable();
+        checkTime();
+        getStorage();
+        
+        $(".row").on("click", function(event){
+          event.preventDefault()
+          if(!event.target.matches(".saveBtn"))
+          {
+            return; 
+          }
+          var index = $(this).attr("id"); // Index equals row num that was clicked on
+          textInput = $(this).find("textArea").val(); // text input is text within said row
+          //console.log(textInput); // Works well until here 
+          localStorage.setItem("stor[" + index + "]", JSON.stringify(textInput));  
+        })
+      });
+      
+      </script>
+  </body>
+</html>
