@@ -61,7 +61,7 @@
             $(".container").append(row);
               //Append 8 hour block cols
             var col1 = $("<div>");
-            col1.addClass("col-1")
+            col1.addClass("col-2 col-md-1")
             row.append(col1);
             var tBlock = $("<div>");
             if(i < 4){
@@ -82,7 +82,7 @@
 
             // Append 8 Text areas
             var col2 = $("<div>");
-            col2.addClass("col-10");
+            col2.addClass("col-8 col-md-10");
             row.append(col2);
             var formEl = $("<form>");
             formEl.attr("id", "formEl" + i)
@@ -94,7 +94,7 @@
 
             //Append 8 save btns
             var col3 = $("<div>");
-            col3.addClass("col-1");
+            col3.addClass("col-2 col-md-1");
             row.append(col3);
             var btn = $("<button>");
             btn.addClass("saveBtn")
@@ -110,18 +110,25 @@
           for(var i = 0; i < 9; i++){
             var tVal = $("#tBlock-" + i).attr("value");
             tVal = parseInt(tVal);
+            
             var txtBox = $("#txt-" + i);
              if(tVal === currentTime){
-               txtBox.addClass("present")
+               txtBox.addClass("present");
              }
              else if (tVal < currentTime){
-              txtBox.addClass("past")
+              txtBox.addClass("past");
              }
              else{
-              txtBox.addClass("future")
+              txtBox.addClass("future");
              }
- 
+          
           }
+         
+        }
+        var interval;
+        function minCheck(){
+          interval = setInterval(checkTime, 1000);
+          
         }
         
         function getStorage(){
@@ -134,6 +141,7 @@
         createTable();
         checkTime();
         getStorage();
+        minCheck();
         
         $(".row").on("click", function(event){
           event.preventDefault()
